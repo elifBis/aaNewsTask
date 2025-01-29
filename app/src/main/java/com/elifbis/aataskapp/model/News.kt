@@ -16,7 +16,7 @@ data class NewsListModel (
 class Facets()
 
 data class News (
-    val newsID: Long,
+    val newsId: Long,
     val newsType: Long,
     val title: String,
     val spot: String,

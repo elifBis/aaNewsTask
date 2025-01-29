@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.elifbis.aataskapp.model.News
 import com.elifbis.aataskapp.model.Priority
 import com.elifbis.aataskapp.ui.theme.aa_blue
@@ -45,7 +46,7 @@ import com.elifbis.aataskapp.ui.theme.aa_yellow
 
 
 @Composable
-fun NewsList(newsList: List<News>) {
+fun NewsList(newsList: List<News>, navController: NavController) {
     if (newsList.isEmpty()) {
         Text(
             text = "Henüz bir haber bulunmuyor.",
@@ -59,32 +60,14 @@ fun NewsList(newsList: List<News>) {
             modifier = Modifier.fillMaxSize()
         ) {
             items(newsList) { news ->
-                NewsCard(news = news)
+                NewsCard(news = news, navController = navController)
             }
         }
     }
 }
 
-//fun OutlinedCardExample() {
-//    OutlinedCard(
-//        colors = CardDefaults.cardColors(
-//            containerColor = MaterialTheme.colorScheme.surface,
-//        ),
-//        border = BorderStroke(1.dp, Color.Black),
-//        modifier = Modifier
-//            .size(width = 240.dp, height = 100.dp)
-//    ) {
-//        Text(
-//            text = "Outlined",
-//            modifier = Modifier
-//                .padding(16.dp),
-//            textAlign = TextAlign.Center,
-//        )
-//    }
-//}
-
 @Composable
-fun NewsCard(news: News) {
+fun NewsCard(news: News, navController :NavController) {
     Column {
 
         val priorityColor = news.priority.color
@@ -96,6 +79,11 @@ fun NewsCard(news: News) {
             ),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
             modifier = Modifier.fillMaxWidth().padding(3.dp)
+                .clickable {
+                    navController.navigate(
+                        "news_detail_screen/${news.newsId}"
+                    )
+                }
         ) {
             Column {
                 HorizontalDivider(

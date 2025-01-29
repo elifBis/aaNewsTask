@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.elifbis.aataskapp.model.News
-/*
+
 @Composable
 fun NewsDetail(news: News) {
     Column(
@@ -33,30 +33,5 @@ fun NewsDetail(news: News) {
             modifier = Modifier.padding(bottom = 8.dp),
             fontWeight = FontWeight.Bold
         )
-
-        Text(
-            text = news.spot, // spot: Kısa açıklama veya içerik
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(news.photos.split(",").map { it.trim() }) { photoUrl ->
-                Image(
-                    painter = rememberImagePainter(photoUrl),
-                    contentDescription = "Haber Fotoğrafı",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(bottom = 8.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
     }
-}*/
+}

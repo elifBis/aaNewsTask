@@ -25,15 +25,20 @@ class NewsViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             println(newsList.value)
             try {
-                val data = retrofit.getData() // NewsListModel geliyor
-                println("API'den Gelen Veri: ${data.newsList}") // Debug için
-                newsList.value = data.newsList // List<News> set ediliyor
+                val data = retrofit.getData()
+                println("API'den Gelen Veri: ${data.newsList}")
+                newsList.value = data.newsList
             } catch (e: Exception) {
                 e.printStackTrace()
                 println("Hata Mesajı: ${e.message}")
                 newsList.value = emptyList()
             }
         }
+    }
+
+    fun getNewsById(newsID: Long?): News? {
+        if (newsID == null) return null
+        return newsList.value.firstOrNull  { it.newsId == newsID }
     }
 
 }
