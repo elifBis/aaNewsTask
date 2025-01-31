@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation(libs.coil.compose)
-
     //implementation ("androidx.compose.material:material-icons-extended:$compose_version")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,4 +66,7 @@ dependencies {
     // coroutine
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    // indicator
+    implementation("com.google.accompanist:accompanist-pager:0.32.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.32.0")
 }

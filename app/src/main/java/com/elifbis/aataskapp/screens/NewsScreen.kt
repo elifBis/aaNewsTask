@@ -11,6 +11,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -70,13 +71,16 @@ import java.util.Locale.Category
 @Composable
 fun NewsList(newsList: List<News>, navController: NavController) {
     if (newsList.isEmpty()) {
-        Text(
-            text = "Henüz bir haber bulunmuyor.",
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            style = MaterialTheme.typography.displaySmall
-        )
+            Column(
+                modifier = Modifier.fillMaxSize().padding(50.dp),
+                horizontalAlignment = Alignment.CenterHorizontally            ) {
+                Text(text = "Henüz bir haber bulunamıyor.", style = MaterialTheme.typography.bodySmall)
+                Image(
+                    painter = painterResource(id = R.drawable.maymun),
+                    contentDescription = ("maymun")
+                )
+            }
+
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
@@ -90,8 +94,6 @@ fun NewsList(newsList: List<News>, navController: NavController) {
 @Composable
 fun NewsCard(news: News, navController :NavController) {
     Column {
-        val priorityColor = news.priority.color
-        val priorityNumber = news.priority.number.toString()
 
         OutlinedCard(
             colors = CardDefaults.cardColors(
@@ -100,7 +102,7 @@ fun NewsCard(news: News, navController :NavController) {
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(3.dp)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
                 .clickable {
                     navController.navigate(
                         "news_detail_screen/${news.newsId}"
@@ -109,26 +111,7 @@ fun NewsCard(news: News, navController :NavController) {
         ) {
             Column {
                 PriorityColorLine(news = news)
-//                Row(
-//                    modifier = Modifier
-//                        .align(Alignment.Start)
-//                        .fillMaxWidth()
-//                        .padding(10.dp)
-//                ) {
-//                    PriorityBox(news = news)
-//                    ReusableSpacer()
-//                    LanguageUIBox(news = news)
-//                    ReusableSpacer()
-//                    VerticalDivider(
-//                        modifier = Modifier.height(20.dp),
-//                        thickness = 1.dp,
-//                        color = MaterialTheme.colorScheme.tertiary
-//                  )
-//                    ReusableSpacer()
-//                    NewsTypeIcon(news = news)
-//                    ReusableSpacer()
-//                    IsRelatableIcon(news = news)
-
+                ReusableSpacer()
                 ReusableRowList(
                     listOf(
                         {PriorityBox(news = news) },
@@ -158,7 +141,7 @@ fun NewsCard(news: News, navController :NavController) {
                         .fillMaxHeight())
                     OtherBox(news = news)
                 }// Kategori, Bülten
-                ReusableHorizantalDivider()
+                ReusableHorizontalDivider()
                 ReusableSpacer()
                 Row(modifier = Modifier.fillMaxWidth()) {
                         ReusableSpacer()
@@ -166,6 +149,7 @@ fun NewsCard(news: News, navController :NavController) {
                             Icons.Outlined.LocationOn,
                             "location icon",
                             tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier.size(20.dp)
                         )
                         LocationText(news = news)
                         Spacer(Modifier
@@ -173,9 +157,11 @@ fun NewsCard(news: News, navController :NavController) {
                             .fillMaxHeight())
                         DateTimeText(news = news)
                         ReusableSpacer()
+                        ReusableSpacer()
 
                     }// Konum, Saat
                 }
+            ReusableSpacer()
             }
         }
     }
@@ -183,8 +169,9 @@ fun NewsCard(news: News, navController :NavController) {
 fun PriorityColorLine(news: News){
     val priorityColor = news.priority.color
     HorizontalDivider(
-        modifier = Modifier.padding(1.dp),
-        thickness = 3.dp,
+        modifier = Modifier.padding(horizontal = 10.dp).
+        fillMaxSize(),
+        thickness = 4.dp,
         color = priorityColor
     )
 }
@@ -237,12 +224,14 @@ fun LanguageUIBox(news: News){
 fun NewsTypeIcon(news: News) {
     val newsTypeIcons = mapOf(
         NewsType.Text to R.drawable.text,
-        NewsType.Photo to R.drawable.camera,
         NewsType.Video to R.drawable.video,
+        NewsType.Photo to R.drawable.camera,
         NewsType.Graphic to R.drawable.graph
     )
 
-    val iconRes = newsTypeIcons[news.newsType] ?: R.drawable.graph
+    val newsType = NewsType.fromInt(news.newsType)
+    val iconRes = newsTypeIcons[newsType] ?: R.drawable.graph
+
     Icon(
         modifier = Modifier.size(20.dp),
         painter = painterResource(id = iconRes),
@@ -273,7 +262,7 @@ fun NewsTitle(news : News){
         color = priorityColor,
         style = MaterialTheme.typography.titleSmall,
         //modifier = Modifier.padding(10.dp),
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Bold
     )
 }
 @Composable
@@ -323,7 +312,7 @@ fun CategoryBox(news: News) {
         Text(
             text = displayedText,
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(1.dp),
             fontWeight = FontWeight.Normal
         )
@@ -339,7 +328,7 @@ fun OtherBox(news: News) {
         Text(
             text = "Genel",
             color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(1.dp),
             fontWeight = FontWeight.Normal
         )
@@ -370,7 +359,7 @@ fun ReusableSpacer(){
     Spacer(modifier = Modifier.size(7.dp))
 }
 @Composable
-fun ReusableHorizantalDivider(){
+fun ReusableHorizontalDivider(){
     HorizontalDivider(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 10.dp), thickness = 1.dp)
@@ -378,10 +367,7 @@ fun ReusableHorizantalDivider(){
 @Composable
 fun ReusableRowList(rowItems: List<@Composable () -> Unit>) {
     Row(
-
         modifier = Modifier
-            .background(color = Color.Green)
-            .fillMaxWidth()
             .padding(8.dp),
         //verticalAlignment = Alignment.CenterVertically
     ) {

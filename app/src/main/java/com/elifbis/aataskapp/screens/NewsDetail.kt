@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -37,12 +39,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.elifbis.aataskapp.R
 import com.elifbis.aataskapp.model.News
 import com.elifbis.aataskapp.ui.theme.aa_blue
+import com.google.accompanist.pager.HorizontalPagerIndicator
 
 @Composable
 fun NewsDetail(news: News) {
@@ -73,18 +77,22 @@ fun NewsDetail(news: News) {
                     {IsApproved(news = news)}
                 )
             )
-            Spacer(Modifier
-                .weight(1f)
-                .fillMaxHeight())
             Column(
-                horizontalAlignment = AbsoluteAlignment.Right
+                horizontalAlignment = AbsoluteAlignment.Right,
+                modifier = Modifier.fillMaxSize()
             ){
                 DateTimeText(news = news)
                 LocationText(news = news)
             }
         }
-        NewsTitle(news = news)
-        ReusableHorizantalDivider()
+        ReusableHorizontalDivider()
+        ReusableSpacer()
+        Row(){
+            ReusableSpacer()
+            ReusableSpacer()
+            NewsTitle(news = news)
+        }
+
     }
 }
 @Composable
@@ -93,48 +101,56 @@ fun ImageGallery(news: News) {
     val pagerState = rememberPagerState(pageCount = { imageUrls.size })
 
     if (imageUrls.isNotEmpty()) {
-        HorizontalPager(state = pagerState) { page ->
-            Column(
-//                modifier = Modifier
-//                    .size(350.dp)
-//                    .background(Color.Black),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val uri = imageUrls[page]
-                Box(
-                    modifier = Modifier.height(250.dp)
-                ){
-                    AsyncImage(
-                    model = "https:$uri",
-                    contentDescription = "Haber Fotoğrafı",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxSize(),
-                        //.height(250.dp)
-                    error = painterResource(R.drawable.graph),
-                    placeholder = painterResource(R.drawable.approved)
-                )}
+        Column {
+            HorizontalPager(state = pagerState) { page ->
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val uri = imageUrls[page]
+                    Box(
+                        modifier = Modifier.height(250.dp)
+                    ){
+                        AsyncImage(
+                            model = "https:$uri",
+                            contentDescription = "Haber Fotoğrafı",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            //.height(250.dp)
+                            error = painterResource(R.drawable.graph),
+                            placeholder = painterResource(R.drawable.approved)
+                        )
 
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Sayfa: ${page + 1} / ${imageUrls.size}",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                }
         }
-    } else {
-        Text(
-            text = "Görüntü bulunamadı",
-            color = Color.Gray,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(16.dp)
-        )
+            ReusableSpacer()
+            Row(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                if (imageUrls.size > 1) {
+                    repeat(pagerState.pageCount) { iteration ->
+                        val color = if (pagerState.currentPage == iteration) aa_blue
+                        else Color.Black
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .size(8.dp)
+                        )
+                    }
+                }
+            }
     }
-}
+}}
 @Composable
 fun IsLockedIcon(news: News){
 //    val color : Color
@@ -163,5 +179,6 @@ fun IsApproved(news: News){
         painter = painterResource(R.drawable.approved),
         contentDescription = "bağlantılı",
         tint = MaterialTheme.colorScheme.tertiary
-    )
-}
+    )}
+
+
