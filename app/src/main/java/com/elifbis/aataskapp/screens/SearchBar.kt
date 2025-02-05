@@ -1,5 +1,7 @@
 package com.elifbis.aataskapp.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
@@ -44,9 +47,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.elifbis.aataskapp.model.News
 
-class SearchBar {
+public var myFilteredNews: List<News> = listOf()
 
+class SearchBar {
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarSample(newsList: List<News>, navController :NavController) {
@@ -56,16 +61,18 @@ fun SearchBarSample(newsList: List<News>, navController :NavController) {
     val filteredNews = remember(searchQuery) {
         newsList.filter { it.title.contains(searchQuery, ignoreCase = true) }
     }
+    myFilteredNews = filteredNews
 
     Box(Modifier.fillMaxWidth()) {
         SearchBar(
             modifier = Modifier.align(Alignment.TopCenter),
             inputField = {
                 SearchBarDefaults.InputField(
+                    modifier = Modifier.border(BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary)),
                     query = searchQuery,
                     onQueryChange = { searchQuery = it },
                     onSearch = { expanded = false },
-                    expanded = expanded,
+                    expanded = false,
                     onExpandedChange = { expanded = it },
                     placeholder = { Text("Haberlerde ara...") },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
@@ -75,25 +82,25 @@ fun SearchBarSample(newsList: List<News>, navController :NavController) {
             expanded = expanded,
             onExpandedChange = { expanded = it },
         ) {
-            Column(Modifier.verticalScroll(rememberScrollState())
-            ) {
-                filteredNews.forEach { news ->
-                    ListItem(
-                        headlineContent = { Text(news.title)},
-                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                        modifier =
-                        Modifier.clickable {
-                            navController.navigate(
-                                "news_detail_screen/${news.newsId}"
-                            )
-                            searchQuery = news.title
-                            expanded = false
-                        }
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 1.dp)
-                    )
-                }
-            }
+//            Column(Modifier.verticalScroll(rememberScrollState())
+//            ) {
+//                filteredNews.forEach { news ->
+//                    ListItem(
+//                        headlineContent = { Text(news.title)},
+//                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+//                        modifier =
+//                        Modifier.clickable {
+//                            navController.navigate(
+//                                "news_detail_screen/${news.newsId}"
+//                            )
+//                            searchQuery = news.title
+//                            expanded = false
+//                        }
+//                            .fillMaxWidth()
+//                            .padding(horizontal = 8.dp, vertical = 1.dp)
+//                    )
+//                }
+//            }
         }
     }
 }

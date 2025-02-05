@@ -90,7 +90,7 @@ fun NewsList(newsList: List<News>, navController: NavController) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(newsList) { news ->
+                items(myFilteredNews) { news ->
                     NewsCard(news = news, navController = navController)
                 }
             }
@@ -333,7 +333,7 @@ fun OtherBox(news: News) {
             .padding(4.dp)
     ) {
         Text(
-            text = "Genel",
+            text = "genel",
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(1.dp),
