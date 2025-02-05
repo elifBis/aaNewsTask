@@ -47,7 +47,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,29 +76,35 @@ import java.util.Locale.Category
 
 @Composable
 fun NewsList(newsList: List<News>, navController: NavController) {
-    if (newsList.isEmpty()) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredNews = remember(searchQuery) {
+        newsList.filter { it.title.contains(searchQuery, ignoreCase = true) }
+    }
+
+    Column {
+        SearchBarSample(searchQuery, onQueryChange = { searchQuery = it })
+
+        if (filteredNews.isEmpty()) {
             Column(
                 modifier = Modifier.fillMaxSize().padding(50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally            ) {
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(text = "Henüz bir haber bulunamıyor.", style = MaterialTheme.typography.bodySmall)
                 Image(
                     painter = painterResource(id = R.drawable.maymun),
                     contentDescription = ("maymun")
                 )
             }
-
-    } else {
-        Column {
-            SearchBarSample(newsList, navController = navController)
+        } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(myFilteredNews) { news ->
+                items(filteredNews) { news -> // Burada `filteredNews` kullanıyoruz
                     NewsCard(news = news, navController = navController)
                 }
             }
         }
-
     }
 }
 @Composable
