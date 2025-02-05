@@ -90,7 +90,7 @@ fun NewsDetail(news: News) {
         Row(){
             ReusableSpacer()
             ReusableSpacer()
-            NewsTitle(news = news)
+            NewsSpot(news = news)
         }
 
     }
@@ -180,5 +180,16 @@ fun IsApproved(news: News){
         contentDescription = "bağlantılı",
         tint = MaterialTheme.colorScheme.tertiary
     )}
+@Composable
+fun NewsSpot(news : News){
+    val priorityColor = news.priority.color
+    Text(
+        text = news.spot,
+        color = priorityColor,
+        style = MaterialTheme.typography.titleSmall,
+        //modifier = Modifier.padding(10.dp),
+        fontWeight = FontWeight.Bold
+    )
+}
 
 

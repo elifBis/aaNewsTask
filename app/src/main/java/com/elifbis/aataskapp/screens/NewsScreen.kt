@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Star
@@ -42,6 +43,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -82,13 +85,17 @@ fun NewsList(newsList: List<News>, navController: NavController) {
             }
 
     } else {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(newsList) { news ->
-                NewsCard(news = news, navController = navController)
+        Column {
+            SearchBarSample(newsList, navController = navController)
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(newsList) { news ->
+                    NewsCard(news = news, navController = navController)
+                }
             }
         }
+
     }
 }
 @Composable
