@@ -78,31 +78,28 @@ import java.util.Locale.Category
 fun NewsList(newsList: List<News>, navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
 
-    val filteredNews = remember(searchQuery) {
-        newsList.filter { it.title.contains(searchQuery, ignoreCase = true) }
-    }
-
     Column {
         SearchBarSample(searchQuery, onQueryChange = { searchQuery = it })
 
-        if (filteredNews.isEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Henüz bir haber bulunamıyor.", style = MaterialTheme.typography.bodySmall)
-                Image(
-                    painter = painterResource(id = R.drawable.maymun),
-                    contentDescription = ("maymun")
-                )
-            }
+        val filteredNews = remember(searchQuery) {
+            if (searchQuery.isEmpty()) newsList // Arama kutusu boşsa tüm haberleri göster
+            else newsList.filter { it.title.contains(searchQuery, ignoreCase = true) }
+        }
+
+        // İlk yüklemede tüm haberleri göstermek için kontrol
+        val newsToDisplay = if (searchQuery.isEmpty() && filteredNews.isEmpty()) {
+            newsList // Ekran ilk açıldığında tüm haberleri göster
+        } else if (filteredNews.isEmpty() && searchQuery.isNotEmpty()) {
+            newsList // Arama sonucu boşsa tüm haberleri göster
         } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(filteredNews) { news -> // Burada `filteredNews` kullanıyoruz
-                    NewsCard(news = news, navController = navController)
-                }
+            filteredNews // Aksi halde filtrelenmiş haberleri göster
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(newsToDisplay) { news ->
+                NewsCard(news = news, navController = navController)
             }
         }
     }
@@ -133,10 +130,10 @@ fun NewsCard(news: News, navController :NavController) {
                         {PriorityBox(news = news) },
                         {LanguageUIBox(news = news) },
                         {VerticalDivider(
-                                modifier = Modifier.height(20.dp),
-                                thickness = 1.dp,
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
+                            modifier = Modifier.height(20.dp),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
                         },
                         {NewsTypeIcon(news = news)},
                         { IsRelatableIcon(news = news) }
@@ -160,27 +157,27 @@ fun NewsCard(news: News, navController :NavController) {
                 ReusableHorizontalDivider()
                 ReusableSpacer()
                 Row(modifier = Modifier.fillMaxWidth()) {
-                        ReusableSpacer()
-                        Icon(
-                            Icons.Outlined.LocationOn,
-                            "location icon",
-                            tint = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        LocationText(news = news)
-                        Spacer(Modifier
-                            .weight(1f)
-                            .fillMaxHeight())
-                        DateTimeText(news = news)
-                        ReusableSpacer()
-                        ReusableSpacer()
+                    ReusableSpacer()
+                    Icon(
+                        Icons.Outlined.LocationOn,
+                        "location icon",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    LocationText(news = news)
+                    Spacer(Modifier
+                        .weight(1f)
+                        .fillMaxHeight())
+                    DateTimeText(news = news)
+                    ReusableSpacer()
+                    ReusableSpacer()
 
-                    }// Konum, Saat
-                }
-            ReusableSpacer()
+                }// Konum, Saat
             }
+            ReusableSpacer()
         }
     }
+}
 @Composable
 fun PriorityColorLine(news: News){
     val priorityColor = news.priority.color
@@ -395,9 +392,6 @@ fun ReusableRowList(rowItems: List<@Composable () -> Unit>) {
         }
     }
 }
-
-
-
 
 
 
