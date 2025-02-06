@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
@@ -79,6 +80,7 @@ fun NewsList(newsList: List<News>, navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
 
     Column {
+        // Arama Çubuğu
         SearchBarSample(searchQuery, onQueryChange = { searchQuery = it })
 
         val filteredNews = remember(searchQuery) {
@@ -90,16 +92,38 @@ fun NewsList(newsList: List<News>, navController: NavController) {
         val newsToDisplay = if (searchQuery.isEmpty() && filteredNews.isEmpty()) {
             newsList // Ekran ilk açıldığında tüm haberleri göster
         } else if (filteredNews.isEmpty() && searchQuery.isNotEmpty()) {
-            newsList // Arama sonucu boşsa tüm haberleri göster
+            null // Arama sonucu boşsa, maymun gösterilecek
         } else {
             filteredNews // Aksi halde filtrelenmiş haberleri göster
         }
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(newsToDisplay) { news ->
-                NewsCard(news = news, navController = navController)
+        if (newsToDisplay == null) {
+            // Arama yapıldı ve sonuç bulunamadıysa maymun görselini göster
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(50.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Henüz bir haber bulunamıyor.",
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.maymun),
+                    contentDescription = "maymun"
+                )
+            }
+        } else {
+            // İlk açılışta veya arama sonucu bulunduğunda haberleri listele
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(newsToDisplay) { news ->
+                    NewsCard(news = news, navController = navController)
+                }
             }
         }
     }
